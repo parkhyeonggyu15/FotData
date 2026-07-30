@@ -49,6 +49,18 @@ public class TeamStats {
     @Column(name = "goals_against", nullable = false)
     private int goalsAgainst;
 
+    @Column(name = "home_goals_for", nullable = false)
+    private int homeGoalsFor;
+
+    @Column(name = "home_goals_against", nullable = false)
+    private int homeGoalsAgainst;
+
+    @Column(name = "away_goals_for", nullable = false)
+    private int awayGoalsFor;
+
+    @Column(name = "away_goals_against", nullable = false)
+    private int awayGoalsAgainst;
+
     @Column(name = "recent_form", length = 5)
     private String recentForm;
 
@@ -61,17 +73,28 @@ public class TeamStats {
         this.lose = 0;
         this.goalsFor = 0;
         this.goalsAgainst = 0;
+        this.homeGoalsFor = 0;
+        this.homeGoalsAgainst = 0;
+        this.awayGoalsFor = 0;
+        this.awayGoalsAgainst = 0;
         this.recentForm = "";
     }
 
     public void update(int played, int win, int draw, int lose,
-                        int goalsFor, int goalsAgainst, String recentForm) {
+                        int goalsFor, int goalsAgainst,
+                        int homeGoalsFor, int homeGoalsAgainst,
+                        int awayGoalsFor, int awayGoalsAgainst,
+                        String recentForm) {
         this.played = played;
         this.win = win;
         this.draw = draw;
         this.lose = lose;
         this.goalsFor = goalsFor;
         this.goalsAgainst = goalsAgainst;
+        this.homeGoalsFor = homeGoalsFor;
+        this.homeGoalsAgainst = homeGoalsAgainst;
+        this.awayGoalsFor = awayGoalsFor;
+        this.awayGoalsAgainst = awayGoalsAgainst;
         this.recentForm = recentForm;
     }
 }
