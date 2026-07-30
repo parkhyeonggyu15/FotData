@@ -3,6 +3,7 @@ package com.fotdata.service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -37,16 +38,17 @@ public class MatchSyncService {
     }
 
     @Transactional
-    public Set<Long> syncCompetition(String competitionCode) {
-        MatchListExternalResponse response = apiClient.fetchMatches(competitionCode);
+    public Set<Long> syncCompetition(String competitionCode, int seasonStartYear) {
+        MatchListExternalResponse response = apiClient.fetchMatches(competitionCode, seasonStartYear);
+        String season = seasonStartYear + "-" + (seasonStartYear + 1);
         Set<Long> newlyFinishedTeamIds = new HashSet<>();
         for (MatchExternalResponse externalMatch : response.matches()) {
-            upsertMatch(externalMatch, newlyFinishedTeamIds);
+            upsertMatch(externalMatch, season, newlyFinishedTeamIds);
         }
         return newlyFinishedTeamIds;
     }
 
-    private void upsertMatch(MatchExternalResponse externalMatch, Set<Long> newlyFinishedTeamIds) {
+    private void upsertMatch(MatchExternalResponse externalMatch, String season, Set<Long> newlyFinishedTeamIds) {
         League league = findOrCreateLeague(externalMatch);
         Team homeTeam = findOrCreateTeam(externalMatch.homeTeam().name(),
                 externalMatch.homeTeam().crest(), league);
@@ -60,12 +62,12 @@ public class MatchSyncService {
         Integer homeScore = externalMatch.score().fullTime().home();
         Integer awayScore = externalMatch.score().fullTime().away();
 
-        Match match = matchRepository
-                .findByHomeTeamIdAndAwayTeamIdAndMatchDate(homeTeam.getId(), awayTeam.getId(), matchDate)
-                .orElseGet(() -> matchRepository.save(
-                        new Match(league, homeTeam, awayTeam, matchDate, status, externalMatch.matchday())));
+        Optional<Match> existingMatch = matchRepository
+                .findByHomeTeamIdAndAwayTeamIdAndMatchDate(homeTeam.getId(), awayTeam.getId(), matchDate);
+        boolean wasFinished = existingMatch.map(m -> m.getStatus() == MatchStatus.FINISHED).orElse(false);
+        Match match = existingMatch.orElseGet(() -> matchRepository.save(
+                new Match(league, homeTeam, awayTeam, matchDate, status, externalMatch.matchday(), season)));
 
-        boolean wasFinished = match.getStatus() == MatchStatus.FINISHED;
         match.updateResult(status, homeScore, awayScore);
 
         if (!wasFinished && status == MatchStatus.FINISHED) {

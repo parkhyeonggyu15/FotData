@@ -17,4 +17,8 @@ public final class SeasonCalculator {
         int startYear = date.getMonthValue() >= SEASON_START_MONTH ? date.getYear() : date.getYear() - 1;
         return startYear + "-" + (startYear + 1);
     }
+
+    public static int startYear(String season) {
+        return Integer.parseInt(season.substring(0, 4));
+    }
 }

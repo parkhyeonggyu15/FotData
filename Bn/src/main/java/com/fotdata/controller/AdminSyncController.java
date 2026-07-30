@@ -13,11 +13,14 @@ import com.fotdata.service.SeasonCalculator;
 import com.fotdata.service.TeamStatsService;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 @Validated
 @RestController
 @RequestMapping("/api/admin")
 public class AdminSyncController {
+
+    private static final String SEASON_PATTERN = "\\d{4}-\\d{4}";
 
     private final MatchSyncService matchSyncService;
     private final TeamStatsService teamStatsService;
@@ -28,14 +31,18 @@ public class AdminSyncController {
     }
 
     @PostMapping("/sync")
-    public String syncCompetition(@RequestParam @NotBlank String leagueCode) {
-        Set<Long> teamIdsToRecalculate = matchSyncService.syncCompetition(leagueCode);
+    public String syncCompetition(
+            @RequestParam @NotBlank String leagueCode,
+            @RequestParam(required = false) @Pattern(regexp = SEASON_PATTERN) String season) {
+        String targetSeason = season != null ? season : SeasonCalculator.currentSeason();
+        int seasonStartYear = SeasonCalculator.startYear(targetSeason);
 
-        String season = SeasonCalculator.currentSeason();
+        Set<Long> teamIdsToRecalculate = matchSyncService.syncCompetition(leagueCode, seasonStartYear);
+
         for (Long teamId : teamIdsToRecalculate) {
-            teamStatsService.recalculate(teamId, season);
+            teamStatsService.recalculate(teamId, targetSeason);
         }
 
-        return "synced %s, recalculated %d teams".formatted(leagueCode, teamIdsToRecalculate.size());
+        return "synced %s season %s, recalculated %d teams".formatted(leagueCode, targetSeason, teamIdsToRecalculate.size());
     }
 }

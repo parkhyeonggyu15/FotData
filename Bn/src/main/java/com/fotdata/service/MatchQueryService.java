@@ -18,8 +18,8 @@ public class MatchQueryService {
         this.matchRepository = matchRepository;
     }
 
-    public List<MatchResponse> getMatchesByMatchday(Long leagueId, Integer matchday) {
-        return matchRepository.findByLeagueIdAndMatchday(leagueId, matchday)
+    public List<MatchResponse> getMatchesByMatchday(Long leagueId, String season, Integer matchday) {
+        return matchRepository.findByLeagueIdAndSeasonAndMatchday(leagueId, season, matchday)
                 .stream()
                 .map(MatchResponse::from)
                 .toList();

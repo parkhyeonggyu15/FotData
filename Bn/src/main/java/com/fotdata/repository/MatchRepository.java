@@ -17,7 +17,7 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
     Optional<Match> findByHomeTeamIdAndAwayTeamIdAndMatchDate(
             Long homeTeamId, Long awayTeamId, LocalDateTime matchDate);
 
-    List<Match> findByLeagueIdAndMatchday(Long leagueId, Integer matchday);
+    List<Match> findByLeagueIdAndSeasonAndMatchday(Long leagueId, String season, Integer matchday);
 
     @Query("""
             select m from Match m

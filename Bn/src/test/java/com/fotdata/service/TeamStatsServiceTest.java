@@ -84,7 +84,7 @@ class TeamStatsServiceTest {
     }
 
     private Match matchOf(Team home, Team away, int homeScore, int awayScore, LocalDateTime date) {
-        Match match = new Match(league, home, away, date, MatchStatus.SCHEDULED, 1);
+        Match match = new Match(league, home, away, date, MatchStatus.SCHEDULED, 1, "2025-2026");
         match.updateResult(MatchStatus.FINISHED, homeScore, awayScore);
         return match;
     }

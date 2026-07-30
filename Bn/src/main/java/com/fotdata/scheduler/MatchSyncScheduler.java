@@ -31,16 +31,17 @@ public class MatchSyncScheduler {
     @Scheduled(cron = "0 0 6,18 * * *")
     public void syncAllCompetitions() {
         Set<Long> teamIdsToRecalculate = new HashSet<>();
+        String season = SeasonCalculator.currentSeason();
+        int seasonStartYear = SeasonCalculator.startYear(season);
 
         for (String code : COMPETITION_CODES) {
             try {
-                teamIdsToRecalculate.addAll(matchSyncService.syncCompetition(code));
+                teamIdsToRecalculate.addAll(matchSyncService.syncCompetition(code, seasonStartYear));
             } catch (Exception e) {
                 log.error("Failed to sync competition: {}", code, e);
             }
         }
 
-        String season = SeasonCalculator.currentSeason();
         for (Long teamId : teamIdsToRecalculate) {
             try {
                 teamStatsService.recalculate(teamId, season);

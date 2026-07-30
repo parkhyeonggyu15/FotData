@@ -1,6 +1,7 @@
 package com.fotdata.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,7 +33,7 @@ class AdminSyncControllerTest {
 
     @Test
     void 올바른_관리자키를_보내면_동기화가_수행된다() throws Exception {
-        when(matchSyncService.syncCompetition(any())).thenReturn(Set.of(1L, 2L));
+        when(matchSyncService.syncCompetition(any(), anyInt())).thenReturn(Set.of(1L, 2L));
 
         mockMvc.perform(post("/api/admin/sync")
                         .param("leagueCode", "PL")

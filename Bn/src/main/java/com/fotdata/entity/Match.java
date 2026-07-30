@@ -55,14 +55,18 @@ public class Match {
     @Column(nullable = false)
     private Integer matchday;
 
+    @Column(nullable = false, length = 9)
+    private String season;
+
     public Match(League league, Team homeTeam, Team awayTeam, LocalDateTime matchDate,
-                 MatchStatus status, Integer matchday) {
+                 MatchStatus status, Integer matchday, String season) {
         this.league = league;
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         this.matchDate = matchDate;
         this.status = status;
         this.matchday = matchday;
+        this.season = season;
     }
 
     public void updateResult(MatchStatus status, Integer homeScore, Integer awayScore) {

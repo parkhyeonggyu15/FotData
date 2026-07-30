@@ -23,10 +23,10 @@ public class FootballDataApiClient {
         this.rateLimiter = rateLimiter;
     }
 
-    public MatchListExternalResponse fetchMatches(String competitionCode) {
+    public MatchListExternalResponse fetchMatches(String competitionCode, int seasonStartYear) {
         rateLimiter.acquire();
         return restClient.get()
-                .uri("/v4/competitions/{code}/matches", competitionCode)
+                .uri("/v4/competitions/{code}/matches?season={season}", competitionCode, seasonStartYear)
                 .retrieve()
                 .body(MatchListExternalResponse.class);
     }
