@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fotdata.dto.response.TeamStatsResponse;
 import com.fotdata.entity.Match;
 import com.fotdata.entity.MatchStatus;
 import com.fotdata.entity.Team;
@@ -29,6 +30,14 @@ public class TeamStatsService {
         this.teamRepository = teamRepository;
         this.matchRepository = matchRepository;
         this.teamStatsRepository = teamStatsRepository;
+    }
+
+    @Transactional(readOnly = true)
+    public TeamStatsResponse getTeamStats(Long teamId, String season) {
+        TeamStats stats = teamStatsRepository.findByTeamIdAndSeason(teamId, season)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "TeamStats not found for team %d, season %s".formatted(teamId, season)));
+        return TeamStatsResponse.from(stats);
     }
 
     @Transactional

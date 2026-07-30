@@ -2,6 +2,8 @@ package com.fotdata.service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,14 +37,16 @@ public class MatchSyncService {
     }
 
     @Transactional
-    public void syncCompetition(String competitionCode) {
+    public Set<Long> syncCompetition(String competitionCode) {
         MatchListExternalResponse response = apiClient.fetchMatches(competitionCode);
+        Set<Long> newlyFinishedTeamIds = new HashSet<>();
         for (MatchExternalResponse externalMatch : response.matches()) {
-            upsertMatch(externalMatch);
+            upsertMatch(externalMatch, newlyFinishedTeamIds);
         }
+        return newlyFinishedTeamIds;
     }
 
-    private void upsertMatch(MatchExternalResponse externalMatch) {
+    private void upsertMatch(MatchExternalResponse externalMatch, Set<Long> newlyFinishedTeamIds) {
         League league = findOrCreateLeague(externalMatch);
         Team homeTeam = findOrCreateTeam(externalMatch.homeTeam().name(),
                 externalMatch.homeTeam().crest(), league);
@@ -61,7 +65,13 @@ public class MatchSyncService {
                 .orElseGet(() -> matchRepository.save(
                         new Match(league, homeTeam, awayTeam, matchDate, status, externalMatch.matchday())));
 
+        boolean wasFinished = match.getStatus() == MatchStatus.FINISHED;
         match.updateResult(status, homeScore, awayScore);
+
+        if (!wasFinished && status == MatchStatus.FINISHED) {
+            newlyFinishedTeamIds.add(homeTeam.getId());
+            newlyFinishedTeamIds.add(awayTeam.getId());
+        }
     }
 
     private League findOrCreateLeague(MatchExternalResponse externalMatch) {
