@@ -5,9 +5,11 @@ export function Layout() {
     <div>
       <header>
         <nav>
+          <NavLink to="/" end>홈</NavLink>
           <NavLink to="/matches">경기 목록</NavLink>
           <NavLink to="/rankings">순위표</NavLink>
           <NavLink to="/h2h">상대전적</NavLink>
+          <NavLink to="/predictions">예측</NavLink>
         </nav>
       </header>
       <main>
