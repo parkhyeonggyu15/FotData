@@ -54,3 +54,43 @@ export interface TeamResponse {
   name: string;
   crestUrl: string | null;
 }
+
+export interface EloResponse {
+  teamId: number;
+  teamName: string;
+  rating: number;
+}
+
+export interface MatchPredictionResponse {
+  homeTeamId: number;
+  awayTeamId: number;
+  homeWinProbability: number;
+  drawProbability: number;
+  awayWinProbability: number;
+}
+
+export interface SeasonPredictionResponse {
+  teamId: number;
+  teamName: string;
+  averageRank: number;
+  titleProbability: number;
+  relegationProbability: number;
+}
+
+export interface PlayerScorerResponse {
+  playerId: number;
+  playerName: string;
+  teamId: number;
+  teamName: string;
+  goals: number;
+  assists: number;
+  playedMatches: number;
+}
+
+export interface PlayerGoalPredictionResponse {
+  playerId: number;
+  playerName: string;
+  teamId: number;
+  teamName: string;
+  predictedGoals: number;
+}
