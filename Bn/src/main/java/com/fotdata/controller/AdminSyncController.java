@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fotdata.service.MatchSyncService;
+import com.fotdata.service.PlayerSyncService;
 import com.fotdata.service.SeasonCalculator;
 import com.fotdata.service.TeamStatsService;
 
@@ -24,10 +25,13 @@ public class AdminSyncController {
 
     private final MatchSyncService matchSyncService;
     private final TeamStatsService teamStatsService;
+    private final PlayerSyncService playerSyncService;
 
-    public AdminSyncController(MatchSyncService matchSyncService, TeamStatsService teamStatsService) {
+    public AdminSyncController(MatchSyncService matchSyncService, TeamStatsService teamStatsService,
+                                PlayerSyncService playerSyncService) {
         this.matchSyncService = matchSyncService;
         this.teamStatsService = teamStatsService;
+        this.playerSyncService = playerSyncService;
     }
 
     @PostMapping("/sync")
@@ -42,6 +46,8 @@ public class AdminSyncController {
         for (Long teamId : teamIdsToRecalculate) {
             teamStatsService.recalculate(teamId, targetSeason);
         }
+
+        playerSyncService.syncTopScorers(leagueCode, seasonStartYear);
 
         return "synced %s season %s, recalculated %d teams".formatted(leagueCode, targetSeason, teamIdsToRecalculate.size());
     }

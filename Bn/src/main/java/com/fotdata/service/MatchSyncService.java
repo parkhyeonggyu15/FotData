@@ -26,15 +26,18 @@ public class MatchSyncService {
     private final LeagueRepository leagueRepository;
     private final TeamRepository teamRepository;
     private final MatchRepository matchRepository;
+    private final EloService eloService;
 
     public MatchSyncService(FootballDataApiClient apiClient,
                              LeagueRepository leagueRepository,
                              TeamRepository teamRepository,
-                             MatchRepository matchRepository) {
+                             MatchRepository matchRepository,
+                             EloService eloService) {
         this.apiClient = apiClient;
         this.leagueRepository = leagueRepository;
         this.teamRepository = teamRepository;
         this.matchRepository = matchRepository;
+        this.eloService = eloService;
     }
 
     @Transactional
@@ -73,6 +76,7 @@ public class MatchSyncService {
         if (!wasFinished && status == MatchStatus.FINISHED) {
             newlyFinishedTeamIds.add(homeTeam.getId());
             newlyFinishedTeamIds.add(awayTeam.getId());
+            eloService.applyMatchResult(homeTeam, awayTeam, homeScore, awayScore);
         }
     }
 

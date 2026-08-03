@@ -2,10 +2,12 @@ package com.fotdata.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fotdata.dto.response.MatchResponse;
+import com.fotdata.entity.MatchStatus;
 import com.fotdata.repository.MatchRepository;
 
 @Service
@@ -20,6 +22,13 @@ public class MatchQueryService {
 
     public List<MatchResponse> getMatchesByMatchday(Long leagueId, String season, Integer matchday) {
         return matchRepository.findByLeagueIdAndSeasonAndMatchday(leagueId, season, matchday)
+                .stream()
+                .map(MatchResponse::from)
+                .toList();
+    }
+
+    public List<MatchResponse> getRecentMatches(int limit) {
+        return matchRepository.findByStatusOrderByMatchDateDesc(MatchStatus.FINISHED, PageRequest.of(0, limit))
                 .stream()
                 .map(MatchResponse::from)
                 .toList();

@@ -34,4 +34,9 @@ public class MatchController {
             @RequestParam @Positive Integer matchday) {
         return matchQueryService.getMatchesByMatchday(leagueId, season, matchday);
     }
+
+    @GetMapping("/recent")
+    public List<MatchResponse> getRecentMatches(@RequestParam(defaultValue = "5") @Positive Integer limit) {
+        return matchQueryService.getRecentMatches(limit);
+    }
 }

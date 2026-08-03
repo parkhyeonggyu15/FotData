@@ -16,6 +16,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fotdata.service.MatchSyncService;
+import com.fotdata.service.PlayerSyncService;
 import com.fotdata.service.TeamStatsService;
 
 @WebMvcTest(AdminSyncController.class)
@@ -30,6 +31,9 @@ class AdminSyncControllerTest {
 
     @MockitoBean
     private TeamStatsService teamStatsService;
+
+    @MockitoBean
+    private PlayerSyncService playerSyncService;
 
     @Test
     void 올바른_관리자키를_보내면_동기화가_수행된다() throws Exception {

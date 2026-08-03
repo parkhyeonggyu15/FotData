@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 import com.fotdata.dto.external.MatchListExternalResponse;
+import com.fotdata.dto.external.ScorerListExternalResponse;
 
 @Component
 public class FootballDataApiClient {
@@ -29,5 +30,13 @@ public class FootballDataApiClient {
                 .uri("/v4/competitions/{code}/matches?season={season}", competitionCode, seasonStartYear)
                 .retrieve()
                 .body(MatchListExternalResponse.class);
+    }
+
+    public ScorerListExternalResponse fetchTopScorers(String competitionCode, int seasonStartYear) {
+        rateLimiter.acquire();
+        return restClient.get()
+                .uri("/v4/competitions/{code}/scorers?season={season}&limit=20", competitionCode, seasonStartYear)
+                .retrieve()
+                .body(ScorerListExternalResponse.class);
     }
 }
