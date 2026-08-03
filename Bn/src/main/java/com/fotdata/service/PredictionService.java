@@ -10,11 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fotdata.dto.response.MatchPredictionResponse;
 import com.fotdata.dto.response.PlayerGoalPredictionResponse;
 import com.fotdata.dto.response.SeasonPredictionResponse;
+import com.fotdata.entity.League;
 import com.fotdata.entity.Match;
 import com.fotdata.entity.MatchStatus;
 import com.fotdata.entity.PlayerScorer;
 import com.fotdata.entity.Team;
 import com.fotdata.entity.TeamElo;
+import com.fotdata.repository.LeagueRepository;
 import com.fotdata.repository.MatchRepository;
 import com.fotdata.repository.PlayerScorerRepository;
 import com.fotdata.repository.TeamEloRepository;
@@ -24,16 +26,19 @@ import com.fotdata.repository.TeamEloRepository;
 public class PredictionService {
 
     private static final int SIMULATION_ITERATIONS = 2000;
+    private static final String UEFA_CHAMPIONS_LEAGUE_CODE = "CL";
 
     private final TeamEloRepository teamEloRepository;
     private final MatchRepository matchRepository;
     private final PlayerScorerRepository playerScorerRepository;
+    private final LeagueRepository leagueRepository;
 
     public PredictionService(TeamEloRepository teamEloRepository, MatchRepository matchRepository,
-                              PlayerScorerRepository playerScorerRepository) {
+                              PlayerScorerRepository playerScorerRepository, LeagueRepository leagueRepository) {
         this.teamEloRepository = teamEloRepository;
         this.matchRepository = matchRepository;
         this.playerScorerRepository = playerScorerRepository;
+        this.leagueRepository = leagueRepository;
     }
 
     public MatchPredictionResponse predictMatch(Long homeTeamId, Long awayTeamId) {
@@ -47,6 +52,8 @@ public class PredictionService {
     }
 
     public List<SeasonPredictionResponse> predictSeason(Long leagueId, String season) {
+        assertLeagueSupportsPrediction(leagueId);
+
         List<Match> scheduledMatches = matchRepository
                 .findByLeagueIdAndSeasonAndStatusOrderByMatchDateAsc(leagueId, season, MatchStatus.SCHEDULED);
 
@@ -76,6 +83,8 @@ public class PredictionService {
     }
 
     public List<PlayerGoalPredictionResponse> predictTopScorers(Long leagueId, String baseSeason, int projectedMatches) {
+        assertLeagueSupportsPrediction(leagueId);
+
         List<PlayerScorer> lastSeasonScorers = playerScorerRepository
                 .findByLeagueIdAndSeasonOrderByGoalsDesc(leagueId, baseSeason);
 
@@ -88,6 +97,14 @@ public class PredictionService {
                         PlayerGoalPredictor.predictGoals(scorer.getGoals(), scorer.getPlayedMatches(), projectedMatches)))
                 .sorted((a, b) -> Double.compare(b.predictedGoals(), a.predictedGoals()))
                 .toList();
+    }
+
+    private void assertLeagueSupportsPrediction(Long leagueId) {
+        League league = leagueRepository.findById(leagueId)
+                .orElseThrow(() -> new IllegalArgumentException("League not found: " + leagueId));
+        if (UEFA_CHAMPIONS_LEAGUE_CODE.equals(league.getCode())) {
+            throw new IllegalArgumentException("Season prediction is not supported for tournament-style competitions");
+        }
     }
 
     private double ratingOf(Long teamId) {

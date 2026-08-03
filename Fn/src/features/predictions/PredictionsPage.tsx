@@ -9,6 +9,7 @@ import { TeamPicker } from "../h2h/TeamPicker";
 import { MatchPredictionResult } from "./MatchPredictionResult";
 import { SeasonPredictionTable } from "./SeasonPredictionTable";
 import { TopScorerPredictionTable } from "./TopScorerPredictionTable";
+import { PredictionErrorState } from "./PredictionErrorState";
 
 const season = currentSeason();
 const BASE_SEASON = "2025-2026";
@@ -88,13 +89,13 @@ export function PredictionsPage() {
       )}
 
       {seasonPredictionQuery.isLoading && <LoadingState />}
-      {seasonPredictionQuery.error && <ErrorState error={seasonPredictionQuery.error} />}
+      {seasonPredictionQuery.error && <PredictionErrorState error={seasonPredictionQuery.error} />}
       {seasonPredictionQuery.data && <SeasonPredictionTable predictions={seasonPredictionQuery.data} />}
 
       <h2>선수 득점왕 예측 ({season})</h2>
       <p>{BASE_SEASON} 시즌 경기당 득점률을 바탕으로 추정한 값이에요.</p>
       {topScorerPredictionQuery.isLoading && <LoadingState />}
-      {topScorerPredictionQuery.error && <ErrorState error={topScorerPredictionQuery.error} />}
+      {topScorerPredictionQuery.error && <PredictionErrorState error={topScorerPredictionQuery.error} />}
       {topScorerPredictionQuery.data && (
         <TopScorerPredictionTable predictions={topScorerPredictionQuery.data} />
       )}
