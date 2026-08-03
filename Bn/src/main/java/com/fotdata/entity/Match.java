@@ -52,7 +52,6 @@ public class Match {
     @Column(name = "away_score")
     private Integer awayScore;
 
-    @Column(nullable = false)
     private Integer matchday;
 
     @Column(nullable = false, length = 9)

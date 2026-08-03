@@ -11,7 +11,7 @@ public enum MatchStatus {
         return switch (externalStatus) {
             case "SCHEDULED", "TIMED" -> SCHEDULED;
             case "IN_PLAY", "PAUSED" -> LIVE;
-            case "FINISHED" -> FINISHED;
+            case "FINISHED", "AWARDED" -> FINISHED;
             case "SUSPENDED", "POSTPONED" -> POSTPONED;
             case "CANCELLED" -> CANCELLED;
             default -> throw new IllegalArgumentException("Unknown match status: " + externalStatus);
