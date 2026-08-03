@@ -7,10 +7,11 @@ import { LoadingState } from "../../components/LoadingState";
 import { ErrorState } from "../../components/ErrorState";
 import { MatchCard } from "./MatchCard";
 
-const season = currentSeason();
+const SEASON_OPTIONS = ["2026-2027", "2025-2026"];
 
 export function MatchListPage() {
   const [leagueId, setLeagueId] = useState<number | null>(null);
+  const [season, setSeason] = useState(currentSeason());
   const [matchday, setMatchday] = useState(1);
 
   const leaguesQuery = useQuery({
@@ -48,6 +49,15 @@ export function MatchListPage() {
           ))}
         </select>
 
+        <label htmlFor="season-select">시즌</label>
+        <select id="season-select" value={season} onChange={(e) => setSeason(e.target.value)}>
+          {SEASON_OPTIONS.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+
         <label htmlFor="matchday-input">라운드</label>
         <input
           id="matchday-input"
@@ -60,7 +70,10 @@ export function MatchListPage() {
 
       {matchesQuery.isLoading && <LoadingState />}
       {matchesQuery.error && <ErrorState error={matchesQuery.error} />}
-      {matchesQuery.data && (
+      {matchesQuery.data && matchesQuery.data.length === 0 && (
+        <p>해당 라운드에 경기가 없어요.</p>
+      )}
+      {matchesQuery.data && matchesQuery.data.length > 0 && (
         <ul>
           {matchesQuery.data.map((match) => (
             <li key={match.id}>
