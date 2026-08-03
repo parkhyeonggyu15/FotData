@@ -5,6 +5,7 @@ import com.fotdata.entity.TeamElo;
 public record EloResponse(
         Long teamId,
         String teamName,
+        String teamCrestUrl,
         double rating
 ) {
 
@@ -12,6 +13,7 @@ public record EloResponse(
         return new EloResponse(
                 teamElo.getTeam().getId(),
                 teamElo.getTeam().getName(),
+                teamElo.getTeam().getCrestUrl(),
                 teamElo.getRating()
         );
     }

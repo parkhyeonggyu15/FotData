@@ -31,7 +31,7 @@ class MatchControllerTest {
     @Test
     void 정상_파라미터로_요청하면_200과_경기목록을_반환한다() throws Exception {
         MatchResponse response = new MatchResponse(
-                1L, "Premier League", "Arsenal", "Chelsea",
+                1L, "Premier League", "Arsenal", "arsenal.png", "Chelsea", "chelsea.png",
                 LocalDateTime.of(2025, 9, 1, 0, 0), MatchStatus.FINISHED, 2, 1, 3);
         when(matchQueryService.getMatchesByMatchday(any(), any(), any())).thenReturn(List.of(response));
 
@@ -64,7 +64,7 @@ class MatchControllerTest {
     @Test
     void 최근_경기를_조회하면_200을_반환한다() throws Exception {
         MatchResponse response = new MatchResponse(
-                1L, "Premier League", "Arsenal", "Chelsea",
+                1L, "Premier League", "Arsenal", "arsenal.png", "Chelsea", "chelsea.png",
                 LocalDateTime.of(2025, 9, 1, 0, 0), MatchStatus.FINISHED, 2, 1, 3);
         when(matchQueryService.getRecentMatches(anyInt())).thenReturn(List.of(response));
 

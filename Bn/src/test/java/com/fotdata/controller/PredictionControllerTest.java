@@ -48,7 +48,7 @@ class PredictionControllerTest {
     @Test
     void 시즌_순위_예측을_조회하면_200을_반환한다() throws Exception {
         when(predictionService.predictSeason(any(), any()))
-                .thenReturn(List.of(new SeasonPredictionResponse(1L, "Arsenal FC", 1.5, 0.3, 0.05)));
+                .thenReturn(List.of(new SeasonPredictionResponse(1L, "Arsenal FC", "arsenal.png", 1.5, 0.3, 0.05)));
 
         mockMvc.perform(get("/api/predictions/season")
                         .param("leagueId", "1").param("season", "2026-2027"))
@@ -65,7 +65,8 @@ class PredictionControllerTest {
     @Test
     void 선수_득점_예측을_조회하면_200을_반환한다() throws Exception {
         when(predictionService.predictTopScorers(any(), any(), anyInt()))
-                .thenReturn(List.of(new PlayerGoalPredictionResponse(1L, "Erling Haaland", 13L, "Manchester City FC", 28.5)));
+                .thenReturn(List.of(
+                        new PlayerGoalPredictionResponse(1L, "Erling Haaland", 13L, "Manchester City FC", "city.png", 28.5)));
 
         mockMvc.perform(get("/api/predictions/top-scorers")
                         .param("leagueId", "1").param("baseSeason", "2025-2026"))

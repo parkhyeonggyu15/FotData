@@ -5,6 +5,7 @@ import com.fotdata.entity.TeamStats;
 public record TeamStatsResponse(
         Long teamId,
         String teamName,
+        String teamCrestUrl,
         String season,
         int played,
         int win,
@@ -21,6 +22,7 @@ public record TeamStatsResponse(
         return new TeamStatsResponse(
                 stats.getTeam().getId(),
                 stats.getTeam().getName(),
+                stats.getTeam().getCrestUrl(),
                 stats.getSeason(),
                 stats.getPlayed(),
                 stats.getWin(),

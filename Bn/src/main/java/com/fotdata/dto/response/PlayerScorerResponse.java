@@ -7,6 +7,7 @@ public record PlayerScorerResponse(
         String playerName,
         Long teamId,
         String teamName,
+        String teamCrestUrl,
         int goals,
         int assists,
         int playedMatches
@@ -18,6 +19,7 @@ public record PlayerScorerResponse(
                 scorer.getPlayer().getName(),
                 scorer.getTeam().getId(),
                 scorer.getTeam().getName(),
+                scorer.getTeam().getCrestUrl(),
                 scorer.getGoals(),
                 scorer.getAssists(),
                 scorer.getPlayedMatches()

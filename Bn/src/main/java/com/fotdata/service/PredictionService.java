@@ -58,10 +58,10 @@ public class PredictionService {
                 .findByLeagueIdAndSeasonAndStatusOrderByMatchDateAsc(leagueId, season, MatchStatus.SCHEDULED);
 
         Map<Long, Double> initialRatings = new HashMap<>();
-        Map<Long, String> teamNames = new HashMap<>();
+        Map<Long, Team> teams = new HashMap<>();
         for (Match match : scheduledMatches) {
-            registerTeam(match.getHomeTeam(), initialRatings, teamNames);
-            registerTeam(match.getAwayTeam(), initialRatings, teamNames);
+            registerTeam(match.getHomeTeam(), initialRatings, teams);
+            registerTeam(match.getAwayTeam(), initialRatings, teams);
         }
 
         List<SeasonSimulator.Fixture> fixtures = scheduledMatches.stream()
@@ -74,7 +74,8 @@ public class PredictionService {
         return results.entrySet().stream()
                 .map(entry -> new SeasonPredictionResponse(
                         entry.getKey(),
-                        teamNames.get(entry.getKey()),
+                        teams.get(entry.getKey()).getName(),
+                        teams.get(entry.getKey()).getCrestUrl(),
                         entry.getValue().averageRank(),
                         entry.getValue().titleProbability(),
                         entry.getValue().relegationProbability()))
@@ -94,6 +95,7 @@ public class PredictionService {
                         scorer.getPlayer().getName(),
                         scorer.getTeam().getId(),
                         scorer.getTeam().getName(),
+                        scorer.getTeam().getCrestUrl(),
                         PlayerGoalPredictor.predictGoals(scorer.getGoals(), scorer.getPlayedMatches(), projectedMatches)))
                 .sorted((a, b) -> Double.compare(b.predictedGoals(), a.predictedGoals()))
                 .toList();
@@ -113,8 +115,8 @@ public class PredictionService {
                 .orElse(TeamElo.INITIAL_RATING);
     }
 
-    private void registerTeam(Team team, Map<Long, Double> initialRatings, Map<Long, String> teamNames) {
+    private void registerTeam(Team team, Map<Long, Double> initialRatings, Map<Long, Team> teams) {
         initialRatings.putIfAbsent(team.getId(), ratingOf(team.getId()));
-        teamNames.putIfAbsent(team.getId(), team.getName());
+        teams.putIfAbsent(team.getId(), team);
     }
 }

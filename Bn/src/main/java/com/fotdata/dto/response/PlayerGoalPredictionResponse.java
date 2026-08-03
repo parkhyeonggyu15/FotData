@@ -5,6 +5,7 @@ public record PlayerGoalPredictionResponse(
         String playerName,
         Long teamId,
         String teamName,
+        String teamCrestUrl,
         double predictedGoals
 ) {
 }
