@@ -5,6 +5,7 @@ import { fetchMatches } from "../../api/matches";
 import { currentSeason } from "../../lib/season";
 import { LoadingState } from "../../components/LoadingState";
 import { ErrorState } from "../../components/ErrorState";
+import { LeagueTabs } from "../../components/LeagueTabs";
 import { MatchCard } from "./MatchCard";
 
 const SEASON_OPTIONS = ["2026-2027", "2025-2026"];
@@ -32,56 +33,51 @@ export function MatchListPage() {
   const selectedLeagueId = leagueId ?? leagues[0]?.id ?? null;
 
   return (
-    <section>
+    <section className="stack">
       <h1>경기 목록</h1>
 
-      <div>
-        <label htmlFor="league-select">리그</label>
-        <select
-          id="league-select"
-          value={selectedLeagueId ?? ""}
-          onChange={(e) => setLeagueId(Number(e.target.value))}
-        >
-          {leagues.map((league) => (
-            <option key={league.id} value={league.id}>
-              {league.name}
-            </option>
-          ))}
-        </select>
+      <LeagueTabs leagues={leagues} selectedLeagueId={selectedLeagueId} onSelect={setLeagueId} />
 
-        <label htmlFor="season-select">시즌</label>
-        <select id="season-select" value={season} onChange={(e) => setSeason(e.target.value)}>
-          {SEASON_OPTIONS.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+      <div className="card">
+        <div className="controls">
+          <div className="field">
+            <label htmlFor="season-select">시즌</label>
+            <select id="season-select" value={season} onChange={(e) => setSeason(e.target.value)}>
+              {SEASON_OPTIONS.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <label htmlFor="matchday-input">라운드</label>
-        <input
-          id="matchday-input"
-          type="number"
-          min={1}
-          value={matchday}
-          onChange={(e) => setMatchday(Number(e.target.value))}
-        />
+          <div className="field">
+            <label htmlFor="matchday-input">라운드</label>
+            <input
+              id="matchday-input"
+              type="number"
+              min={1}
+              value={matchday}
+              onChange={(e) => setMatchday(Number(e.target.value))}
+            />
+          </div>
+        </div>
+
+        {matchesQuery.isLoading && <LoadingState />}
+        {matchesQuery.error && <ErrorState error={matchesQuery.error} />}
+        {matchesQuery.data && matchesQuery.data.length === 0 && (
+          <p className="status-text">해당 라운드에 경기가 없어요.</p>
+        )}
+        {matchesQuery.data && matchesQuery.data.length > 0 && (
+          <ul className="match-list">
+            {matchesQuery.data.map((match) => (
+              <li key={match.id}>
+                <MatchCard match={match} />
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
-
-      {matchesQuery.isLoading && <LoadingState />}
-      {matchesQuery.error && <ErrorState error={matchesQuery.error} />}
-      {matchesQuery.data && matchesQuery.data.length === 0 && (
-        <p>해당 라운드에 경기가 없어요.</p>
-      )}
-      {matchesQuery.data && matchesQuery.data.length > 0 && (
-        <ul>
-          {matchesQuery.data.map((match) => (
-            <li key={match.id}>
-              <MatchCard match={match} />
-            </li>
-          ))}
-        </ul>
-      )}
     </section>
   );
 }
