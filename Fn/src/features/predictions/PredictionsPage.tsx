@@ -49,56 +49,69 @@ export function PredictionsPage() {
   });
 
   return (
-    <section>
+    <section className="stack">
       <h1>예측</h1>
 
-      <h2>경기 승률 예측</h2>
-      <TeamPicker
-        label="홈팀"
-        leagueId={homeLeagueId}
-        onLeagueChange={setHomeLeagueId}
-        teamId={homeTeamId}
-        onTeamChange={setHomeTeamId}
-      />
-      <TeamPicker
-        label="원정팀"
-        leagueId={awayLeagueId}
-        onLeagueChange={setAwayLeagueId}
-        teamId={awayTeamId}
-        onTeamChange={setAwayTeamId}
-      />
+      <div className="card">
+        <div className="section-head">
+          <h2>경기 승률 예측</h2>
+        </div>
+        <div className="controls">
+          <TeamPicker
+            label="홈팀"
+            leagueId={homeLeagueId}
+            onLeagueChange={setHomeLeagueId}
+            teamId={homeTeamId}
+            onTeamChange={setHomeTeamId}
+          />
+          <TeamPicker
+            label="원정팀"
+            leagueId={awayLeagueId}
+            onLeagueChange={setAwayLeagueId}
+            teamId={awayTeamId}
+            onTeamChange={setAwayTeamId}
+          />
+        </div>
 
-      {matchPredictionQuery.isLoading && <LoadingState />}
-      {matchPredictionQuery.error && <ErrorState error={matchPredictionQuery.error} />}
-      {matchPredictionQuery.data && <MatchPredictionResult prediction={matchPredictionQuery.data} />}
+        {matchPredictionQuery.isLoading && <LoadingState />}
+        {matchPredictionQuery.error && <ErrorState error={matchPredictionQuery.error} />}
+        {matchPredictionQuery.data && <MatchPredictionResult prediction={matchPredictionQuery.data} />}
+      </div>
 
-      <h2>시즌 순위 예측 ({season})</h2>
-      {leaguesQuery.isLoading && <LoadingState />}
-      {leaguesQuery.error && <ErrorState error={leaguesQuery.error} />}
-      {leagues.length > 0 && (
-        <select
-          value={selectedSeasonLeagueId ?? ""}
-          onChange={(e) => setSeasonLeagueId(Number(e.target.value))}
-        >
-          {leagues.map((league) => (
-            <option key={league.id} value={league.id}>
-              {league.name}
-            </option>
-          ))}
-        </select>
-      )}
+      <div className="card">
+        <div className="section-head">
+          <h2>시즌 순위 예측 ({season})</h2>
+          {leagues.length > 0 && (
+            <select
+              value={selectedSeasonLeagueId ?? ""}
+              onChange={(e) => setSeasonLeagueId(Number(e.target.value))}
+            >
+              {leagues.map((league) => (
+                <option key={league.id} value={league.id}>
+                  {league.name}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+        {leaguesQuery.isLoading && <LoadingState />}
+        {leaguesQuery.error && <ErrorState error={leaguesQuery.error} />}
+        {seasonPredictionQuery.isLoading && <LoadingState />}
+        {seasonPredictionQuery.error && <PredictionErrorState error={seasonPredictionQuery.error} />}
+        {seasonPredictionQuery.data && <SeasonPredictionTable predictions={seasonPredictionQuery.data} />}
+      </div>
 
-      {seasonPredictionQuery.isLoading && <LoadingState />}
-      {seasonPredictionQuery.error && <PredictionErrorState error={seasonPredictionQuery.error} />}
-      {seasonPredictionQuery.data && <SeasonPredictionTable predictions={seasonPredictionQuery.data} />}
-
-      <h2>선수 득점왕 예측 ({season})</h2>
-      <p>{BASE_SEASON} 시즌 경기당 득점률을 바탕으로 추정한 값이에요.</p>
-      {topScorerPredictionQuery.isLoading && <LoadingState />}
-      {topScorerPredictionQuery.error && <PredictionErrorState error={topScorerPredictionQuery.error} />}
-      {topScorerPredictionQuery.data && (
-        <TopScorerPredictionTable predictions={topScorerPredictionQuery.data} />
-      )}
+      <div className="card">
+        <div className="section-head">
+          <h2>선수 득점왕 예측 ({season})</h2>
+        </div>
+        <p className="section-hint">{BASE_SEASON} 시즌 경기당 득점률을 바탕으로 추정한 값이에요.</p>
+        {topScorerPredictionQuery.isLoading && <LoadingState />}
+        {topScorerPredictionQuery.error && <PredictionErrorState error={topScorerPredictionQuery.error} />}
+        {topScorerPredictionQuery.data && (
+          <TopScorerPredictionTable predictions={topScorerPredictionQuery.data} />
+        )}
+      </div>
     </section>
   );
 }

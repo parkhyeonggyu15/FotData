@@ -35,7 +35,7 @@ export function TeamPicker({ label, leagueId, onLeagueChange, teamId, onTeamChan
   const teams = teamsQuery.data ?? [];
 
   return (
-    <fieldset>
+    <fieldset className="team-picker">
       <legend>{label}</legend>
 
       <select value={leagueId ?? ""} onChange={(e) => onLeagueChange(Number(e.target.value))}>

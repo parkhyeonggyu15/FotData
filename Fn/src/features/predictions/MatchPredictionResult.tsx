@@ -6,13 +6,19 @@ function toPercent(value: number) {
 
 export function MatchPredictionResult({ prediction }: { prediction: MatchPredictionResponse }) {
   return (
-    <dl>
-      <dt>홈 승</dt>
-      <dd>{toPercent(prediction.homeWinProbability)}</dd>
-      <dt>무승부</dt>
-      <dd>{toPercent(prediction.drawProbability)}</dd>
-      <dt>원정 승</dt>
-      <dd>{toPercent(prediction.awayWinProbability)}</dd>
+    <dl className="prob-grid">
+      <div className="prob-home">
+        <dt>홈 승</dt>
+        <dd>{toPercent(prediction.homeWinProbability)}</dd>
+      </div>
+      <div className="prob-draw">
+        <dt>무승부</dt>
+        <dd>{toPercent(prediction.drawProbability)}</dd>
+      </div>
+      <div className="prob-away">
+        <dt>원정 승</dt>
+        <dd>{toPercent(prediction.awayWinProbability)}</dd>
+      </div>
     </dl>
   );
 }
