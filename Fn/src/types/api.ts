@@ -3,8 +3,12 @@ export type MatchStatus = "SCHEDULED" | "LIVE" | "FINISHED" | "POSTPONED" | "CAN
 export interface MatchResponse {
   id: number;
   leagueName: string;
+  homeTeamId: number;
   homeTeamName: string;
+  homeTeamCrestUrl: string | null;
+  awayTeamId: number;
   awayTeamName: string;
+  awayTeamCrestUrl: string | null;
   matchDate: string;
   status: MatchStatus;
   homeScore: number | null;
@@ -15,6 +19,7 @@ export interface MatchResponse {
 export interface TeamStatsResponse {
   teamId: number;
   teamName: string;
+  teamCrestUrl: string | null;
   season: string;
   played: number;
   win: number;
@@ -30,6 +35,7 @@ export interface TeamStatsResponse {
 export interface RankingResponse {
   teamId: number;
   teamName: string;
+  teamCrestUrl: string | null;
   goalsFor: number;
   goalsAgainst: number;
 }
@@ -58,6 +64,7 @@ export interface TeamResponse {
 export interface EloResponse {
   teamId: number;
   teamName: string;
+  teamCrestUrl: string | null;
   rating: number;
 }
 
@@ -72,6 +79,7 @@ export interface MatchPredictionResponse {
 export interface SeasonPredictionResponse {
   teamId: number;
   teamName: string;
+  teamCrestUrl: string | null;
   averageRank: number;
   titleProbability: number;
   relegationProbability: number;
@@ -82,6 +90,7 @@ export interface PlayerScorerResponse {
   playerName: string;
   teamId: number;
   teamName: string;
+  teamCrestUrl: string | null;
   goals: number;
   assists: number;
   playedMatches: number;
@@ -92,5 +101,6 @@ export interface PlayerGoalPredictionResponse {
   playerName: string;
   teamId: number;
   teamName: string;
+  teamCrestUrl: string | null;
   predictedGoals: number;
 }
