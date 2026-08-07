@@ -20,17 +20,17 @@ export function MatchListPage() {
     queryFn: fetchLeagues,
   });
 
+  const leagues = leaguesQuery.data ?? [];
+  const selectedLeagueId = leagueId ?? leagues[0]?.id ?? null;
+
   const matchesQuery = useQuery({
-    queryKey: ["matches", leagueId, season, matchday],
-    queryFn: () => fetchMatches(leagueId!, season, matchday),
-    enabled: leagueId !== null,
+    queryKey: ["matches", selectedLeagueId, season, matchday],
+    queryFn: () => fetchMatches(selectedLeagueId!, season, matchday),
+    enabled: selectedLeagueId !== null,
   });
 
   if (leaguesQuery.isLoading) return <LoadingState />;
   if (leaguesQuery.error) return <ErrorState error={leaguesQuery.error} />;
-
-  const leagues = leaguesQuery.data ?? [];
-  const selectedLeagueId = leagueId ?? leagues[0]?.id ?? null;
 
   return (
     <section className="stack">
