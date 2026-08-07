@@ -39,4 +39,9 @@ public class MatchController {
     public List<MatchResponse> getRecentMatches(@RequestParam(defaultValue = "5") @Positive Integer limit) {
         return matchQueryService.getRecentMatches(limit);
     }
+
+    @GetMapping("/live")
+    public List<MatchResponse> getLiveMatches() {
+        return matchQueryService.getLiveMatches();
+    }
 }

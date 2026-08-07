@@ -33,4 +33,11 @@ public class MatchQueryService {
                 .map(MatchResponse::from)
                 .toList();
     }
+
+    public List<MatchResponse> getLiveMatches() {
+        return matchRepository.findByStatusOrderByMatchDateDesc(MatchStatus.LIVE, PageRequest.of(0, 50))
+                .stream()
+                .map(MatchResponse::from)
+                .toList();
+    }
 }

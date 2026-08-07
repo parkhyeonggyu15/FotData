@@ -8,8 +8,10 @@ import com.fotdata.entity.MatchStatus;
 public record MatchResponse(
         Long id,
         String leagueName,
+        Long homeTeamId,
         String homeTeamName,
         String homeTeamCrestUrl,
+        Long awayTeamId,
         String awayTeamName,
         String awayTeamCrestUrl,
         LocalDateTime matchDate,
@@ -23,8 +25,10 @@ public record MatchResponse(
         return new MatchResponse(
                 match.getId(),
                 match.getLeague().getName(),
+                match.getHomeTeam().getId(),
                 match.getHomeTeam().getName(),
                 match.getHomeTeam().getCrestUrl(),
+                match.getAwayTeam().getId(),
                 match.getAwayTeam().getName(),
                 match.getAwayTeam().getCrestUrl(),
                 match.getMatchDate(),
