@@ -1,16 +1,18 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchLeagues } from "../../api/leagues";
 import { fetchRecentMatches } from "../../api/matches";
 import { fetchEloRankings } from "../../api/analysis";
+import { currentSeason } from "../../lib/season";
 import { LoadingState } from "../../components/LoadingState";
 import { ErrorState } from "../../components/ErrorState";
 import { MatchCard } from "../matches/MatchCard";
 import { EloRankingTable } from "../rankings/EloRankingTable";
+import { FeaturedMatchCard } from "./FeaturedMatchCard";
 
-const RECENT_MATCHES_LIMIT = 5;
+const RECENT_MATCHES_LIMIT = 6;
 const ELO_TOP_N = 5;
+const season = currentSeason();
 
 export function HomePage() {
   const [leagueId, setLeagueId] = useState<number | null>(null);
@@ -34,49 +36,90 @@ export function HomePage() {
     enabled: selectedLeagueId !== null,
   });
 
+  const topTeam = eloQuery.data?.[0];
+  const featuredMatch = recentMatchesQuery.data?.[0];
+  const otherMatches = recentMatchesQuery.data?.slice(1) ?? [];
+
   return (
-    <section>
-      <h1>FotData</h1>
-      <p>해외축구 경기 결과와 팀 분석을 한눈에 확인하세요.</p>
+    <section className="stack">
+      <div className="hero">
+        <h1 className="brand-title">FotData</h1>
+        <p>해외축구 경기 결과와 팀 분석을 한눈에 확인하세요.</p>
+      </div>
 
-      <nav>
-        <Link to="/matches">경기 목록 보기</Link>
-        <Link to="/rankings">순위표 보기</Link>
-        <Link to="/h2h">상대전적 보기</Link>
-        <Link to="/predictions">예측 보기</Link>
-      </nav>
+      <div className="stat-cards">
+        <div className="stat-card">
+          <span className="stat-card-label">동기화된 리그</span>
+          <span className="stat-card-value">{leagues.length || "-"}</span>
+          <span className="stat-card-sub">개 대회</span>
+        </div>
+        <div className="stat-card">
+          <span className="stat-card-label">최근 표시 경기</span>
+          <span className="stat-card-value">{recentMatchesQuery.data?.length ?? "-"}</span>
+          <span className="stat-card-sub">건</span>
+        </div>
+        <div className="stat-card">
+          <span className="stat-card-label">현재 ELO 1위</span>
+          <span className="stat-card-value stat-card-value-text">{topTeam?.teamName ?? "-"}</span>
+          <span className="stat-card-sub">{topTeam ? `${Math.round(topTeam.rating)} pt` : " "}</span>
+        </div>
+        <div className="stat-card">
+          <span className="stat-card-label">기준 시즌</span>
+          <span className="stat-card-value">{season}</span>
+          <span className="stat-card-sub">현재 시즌</span>
+        </div>
+      </div>
 
-      <h2>최근 경기 결과</h2>
-      {recentMatchesQuery.isLoading && <LoadingState />}
-      {recentMatchesQuery.error && <ErrorState error={recentMatchesQuery.error} />}
-      {recentMatchesQuery.data && (
-        <ul>
-          {recentMatchesQuery.data.map((match) => (
-            <li key={match.id}>
-              <MatchCard match={match} />
-            </li>
-          ))}
-        </ul>
+      {featuredMatch && (
+        <div className="card featured-match">
+          <div className="section-head">
+            <h2>주목 경기</h2>
+          </div>
+          <FeaturedMatchCard match={featuredMatch} />
+        </div>
       )}
 
-      <h2>ELO TOP {ELO_TOP_N}</h2>
-      {leaguesQuery.isLoading && <LoadingState />}
-      {leaguesQuery.error && <ErrorState error={leaguesQuery.error} />}
-      {leagues.length > 0 && (
-        <select
-          value={selectedLeagueId ?? ""}
-          onChange={(e) => setLeagueId(Number(e.target.value))}
-        >
-          {leagues.map((league) => (
-            <option key={league.id} value={league.id}>
-              {league.name}
-            </option>
-          ))}
-        </select>
-      )}
-      {eloQuery.isLoading && <LoadingState />}
-      {eloQuery.error && <ErrorState error={eloQuery.error} />}
-      {eloQuery.data && <EloRankingTable rankings={eloQuery.data.slice(0, ELO_TOP_N)} />}
+      <div className="home-split">
+        <div className="card">
+          <div className="section-head">
+            <h2>ELO 순위 TOP {ELO_TOP_N}</h2>
+            {leagues.length > 0 && (
+              <select
+                value={selectedLeagueId ?? ""}
+                onChange={(e) => setLeagueId(Number(e.target.value))}
+              >
+                {leagues.map((league) => (
+                  <option key={league.id} value={league.id}>
+                    {league.name}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+          {leaguesQuery.isLoading && <LoadingState />}
+          {leaguesQuery.error && <ErrorState error={leaguesQuery.error} />}
+          {eloQuery.isLoading && <LoadingState />}
+          {eloQuery.error && <ErrorState error={eloQuery.error} />}
+          {eloQuery.data && <EloRankingTable rankings={eloQuery.data.slice(0, ELO_TOP_N)} />}
+        </div>
+
+        <div className="card">
+          <div className="section-head">
+            <h2>최근 결과</h2>
+          </div>
+          {recentMatchesQuery.isLoading && <LoadingState />}
+          {recentMatchesQuery.error && <ErrorState error={recentMatchesQuery.error} />}
+          {otherMatches.length > 0 && (
+            <ul className="match-list">
+              {otherMatches.map((match) => (
+                <li key={match.id}>
+                  <MatchCard match={match} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
     </section>
   );
 }
