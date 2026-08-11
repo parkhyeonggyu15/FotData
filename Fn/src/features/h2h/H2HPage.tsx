@@ -12,10 +12,12 @@ export function H2HPage() {
   const [leagueBId, setLeagueBId] = useState<number | null>(null);
   const [teamBId, setTeamBId] = useState<number | null>(null);
 
+  const isSameTeam = teamAId !== null && teamAId === teamBId;
+
   const h2hQuery = useQuery({
     queryKey: ["h2h", teamAId, teamBId],
     queryFn: () => fetchHeadToHead(teamAId!, teamBId!),
-    enabled: teamAId !== null && teamBId !== null,
+    enabled: teamAId !== null && teamBId !== null && !isSameTeam,
   });
 
   return (
@@ -39,6 +41,7 @@ export function H2HPage() {
         />
       </div>
 
+      {isSameTeam && <p className="status-text" role="alert">팀 A와 팀 B는 같을 수 없어요.</p>}
       {h2hQuery.isLoading && <LoadingState />}
       {h2hQuery.error && <ErrorState error={h2hQuery.error} />}
       {h2hQuery.data && (

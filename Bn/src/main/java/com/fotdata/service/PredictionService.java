@@ -42,6 +42,10 @@ public class PredictionService {
     }
 
     public MatchPredictionResponse predictMatch(Long homeTeamId, Long awayTeamId) {
+        if (homeTeamId.equals(awayTeamId)) {
+            throw new IllegalArgumentException("홈팀과 원정팀은 같을 수 없습니다.");
+        }
+
         double homeRating = ratingOf(homeTeamId);
         double awayRating = ratingOf(awayTeamId);
 

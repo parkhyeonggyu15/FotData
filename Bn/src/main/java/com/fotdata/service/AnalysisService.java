@@ -43,6 +43,10 @@ public class AnalysisService {
     }
 
     public H2HResponse getHeadToHead(Long teamAId, Long teamBId) {
+        if (teamAId.equals(teamBId)) {
+            throw new IllegalArgumentException("두 팀은 같을 수 없습니다.");
+        }
+
         List<Match> matches = matchRepository.findHeadToHead(
                 teamAId, teamBId, MatchStatus.FINISHED, PageRequest.of(0, H2H_RECENT_SIZE));
 

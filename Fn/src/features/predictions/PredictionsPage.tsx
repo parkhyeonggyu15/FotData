@@ -22,10 +22,12 @@ export function PredictionsPage() {
 
   const [seasonLeagueId, setSeasonLeagueId] = useState<number | null>(null);
 
+  const isSameTeam = homeTeamId !== null && homeTeamId === awayTeamId;
+
   const matchPredictionQuery = useQuery({
     queryKey: ["matchPrediction", homeTeamId, awayTeamId],
     queryFn: () => fetchMatchPrediction(homeTeamId!, awayTeamId!),
-    enabled: homeTeamId !== null && awayTeamId !== null,
+    enabled: homeTeamId !== null && awayTeamId !== null && !isSameTeam,
   });
 
   const leaguesQuery = useQuery({
@@ -73,6 +75,7 @@ export function PredictionsPage() {
           />
         </div>
 
+        {isSameTeam && <p className="status-text" role="alert">홈팀과 원정팀은 같을 수 없어요.</p>}
         {matchPredictionQuery.isLoading && <LoadingState />}
         {matchPredictionQuery.error && <ErrorState error={matchPredictionQuery.error} />}
         {matchPredictionQuery.data && <MatchPredictionResult prediction={matchPredictionQuery.data} />}
