@@ -42,10 +42,7 @@ export function HomePage() {
 
   return (
     <section className="stack">
-      <div className="hero">
-        <h1 className="brand-title">FotData</h1>
-        <p>해외축구 경기 결과와 팀 분석을 한눈에 확인하세요.</p>
-      </div>
+      
 
       <div className="stat-cards">
         <div className="stat-card">
