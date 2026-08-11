@@ -34,6 +34,7 @@ export function RankingsPage() {
 
   const leagues = leaguesQuery.data ?? [];
   const selectedLeagueId = leagueId ?? leagues[0]?.id ?? null;
+  const isChampionsLeague = leagues.find((l) => l.id === selectedLeagueId)?.code === "CL";
 
   const scorersQuery = useQuery({
     queryKey: ["topScorers", selectedLeagueId, season],
@@ -101,12 +102,14 @@ export function RankingsPage() {
             {scorersQuery.error && <ErrorState error={scorersQuery.error} />}
             {scorersQuery.data && (
               <>
-                <p className="section-hint">굵은 왼쪽 라인은 상위 {UCL_QUALIFY_RANK}위, 챔피언스리그 진출권 예상 구간이에요.</p>
+                {!isChampionsLeague && (
+                  <p className="section-hint">굵은 왼쪽 라인은 상위 {UCL_QUALIFY_RANK}위, 챔피언스리그 진출권 예상 구간이에요.</p>
+                )}
                 <RankingTable
                   rankings={scorersQuery.data}
                   metricLabel="득점"
                   metric="goalsFor"
-                  highlightTopN={UCL_QUALIFY_RANK}
+                  highlightTopN={isChampionsLeague ? undefined : UCL_QUALIFY_RANK}
                 />
               </>
             )}
