@@ -1,42 +1,43 @@
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
   /* Surfaces */
-  --bg: #0a0a0a;
-  --bg-elevated: #121212;
-  --bg-card: #141414;
-  --bg-hover: #1c1c1c;
-  --border: #262626;
-  --border-strong: #333333;
+  --bg: #f7f6f4;
+  --bg-elevated: #ffffff;
+  --bg-card: #ffffff;
+  --bg-hover: #eeece8;
+  --border: #e5e3de;
+  --border-strong: #d4d1ca;
 
   /* Text */
-  --text: #ffffff;
-  --text-muted: #9a9a9a;
-  --text-faint: #6b6b6b;
+  --text: #111111;
+  --text-muted: #6b6b6b;
+  --text-faint: #9a9691;
 
-  /* Brand accent (lime) */
-  --accent: #c6f135;
-  --accent-strong: #d9ff4d;
-  --accent-bg: rgba(198, 241, 53, 0.12);
-  --accent-ink: #0a0a0a;
+  /* Brand accent */
+  --accent: #111111;
+  --accent-strong: #000000;
+  --accent-bg: rgba(17, 17, 17, 0.06);
+  --accent-ink: #ffffff;
 
   /* Semantic */
-  --win: #c6f135;
-  --win-bg: rgba(198, 241, 53, 0.14);
+  --win: #1f9d55;
+  --win-bg: rgba(31, 157, 85, 0.1);
   --draw: #8a8a8a;
-  --draw-bg: rgba(138, 138, 138, 0.16);
-  --lose: #ff4d4d;
-  --lose-bg: rgba(255, 77, 77, 0.14);
+  --draw-bg: rgba(138, 138, 138, 0.12);
+  --lose: #d9342b;
+  --lose-bg: rgba(217, 52, 43, 0.1);
 
   /* Layout */
-  --radius: 10px;
-  --radius-sm: 6px;
+  --radius: 20px;
+  --radius-sm: 12px;
+  --radius-pill: 999px;
   --container-width: 1160px;
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-card-hover: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 1px 2px rgba(17, 17, 17, 0.06);
+  --shadow-card-hover: 0 8px 24px rgba(17, 17, 17, 0.08);
 
   --font-sans:
-    "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 * {
@@ -798,13 +799,13 @@ tbody tr:hover {
 .sub-tab {
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-pill);
   color: var(--text-muted);
   font-size: 0.78rem;
   font-weight: 700;
   padding: 0.4rem 0.9rem;
   cursor: pointer;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
 .sub-tab:hover {
