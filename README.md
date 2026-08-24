@@ -117,13 +117,15 @@ FotData/
 │       ├── entity/
 │       ├── repository/
 │       ├── dto/
-│       └── scheduler/
+│       ├── scheduler/
+│       └── config/               # CORS 등 설정
 ├── Fn/                          # 프론트엔드 (React + Vite)
 │   └── src/
 │       ├── api/                  # fetch 래퍼 + 엔드포인트별 호출 함수
 │       ├── features/             # 화면 단위 (matches, rankings, team, h2h, predictions, home)
 │       ├── components/           # 여러 화면이 공유하는 UI
-│       └── types/                # 백엔드 DTO 매핑 타입
+│       ├── types/                # 백엔드 DTO 매핑 타입
+│       └── lib/                  # 공용 유틸리티
 └── Docs/                        # 아키텍처 설계 문서
 ```
 
