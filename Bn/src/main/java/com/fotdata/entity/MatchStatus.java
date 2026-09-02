@@ -14,7 +14,8 @@ public enum MatchStatus {
             case "FINISHED", "AWARDED" -> FINISHED;
             case "SUSPENDED", "POSTPONED" -> POSTPONED;
             case "CANCELLED" -> CANCELLED;
-            default -> throw new IllegalArgumentException("Unknown match status: " + externalStatus);
+            // football-data.org가 시간 미확정 미래 경기에 status 대신 날짜 문자열을 내려주는 경우가 있어 SCHEDULED로 처리
+            default -> SCHEDULED;
         };
     }
 }
